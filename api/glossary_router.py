@@ -176,6 +176,70 @@ async def create_glossary(body: GlossaryCreate):
         raise HTTPException(500, f"용어집 생성 실패: {e}")
 
 
+@router.get("/meta/domains")
+async def list_domains():
+    """모든 도메인 목록 조회"""
+    try:
+        return await glossary_manage_service.fetch_all_domains()
+    except Exception as e:
+        raise HTTPException(500, f"도메인 목록 조회 실패: {e}")
+
+
+@router.get("/meta/owners")
+async def list_owners():
+    """모든 소유자/검토자 목록 조회"""
+    try:
+        return await glossary_manage_service.fetch_all_owners()
+    except Exception as e:
+        raise HTTPException(500, f"소유자 목록 조회 실패: {e}")
+
+
+@router.get("/meta/tags")
+async def list_tags():
+    """모든 태그 목록 조회"""
+    try:
+        return await glossary_manage_service.fetch_all_tags()
+    except Exception as e:
+        raise HTTPException(500, f"태그 목록 조회 실패: {e}")
+
+
+@router.post("/meta/domains")
+async def create_domain(body: DomainCreate):
+    """새 도메인 생성"""
+    try:
+        name = _require_non_empty_name(body.name, "도메인")
+        return await glossary_manage_service.create_new_domain(name, body.description)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"도메인 생성 실패: {e}")
+
+
+@router.post("/meta/owners")
+async def create_owner(body: OwnerCreate):
+    """새 소유자 생성"""
+    try:
+        name = _require_non_empty_name(body.name, "소유자")
+        return await glossary_manage_service.create_new_owner(name, body.email, body.role)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"소유자 생성 실패: {e}")
+
+
+@router.post("/meta/tags")
+async def create_tag(body: TagCreate):
+    """새 태그 생성"""
+    try:
+        name = _require_non_empty_name(body.name, "태그")
+        return await glossary_manage_service.create_new_tag(name, body.color)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"태그 생성 실패: {e}")
+
+
+
 @router.get("/{glossary_id}")
 async def get_glossary(glossary_id: str):
     """특정 용어집 상세 조회"""
@@ -423,68 +487,3 @@ async def delete_term(glossary_id: str, term_id: str):
         raise HTTPException(500, f"용어 삭제 실패: {e}")
 
 
-# =============================================================================
-# 도메인/소유자/태그 API
-# =============================================================================
-
-@router.get("/meta/domains")
-async def list_domains():
-    """모든 도메인 목록 조회"""
-    try:
-        return await glossary_manage_service.fetch_all_domains()
-    except Exception as e:
-        raise HTTPException(500, f"도메인 목록 조회 실패: {e}")
-
-
-@router.get("/meta/owners")
-async def list_owners():
-    """모든 소유자/검토자 목록 조회"""
-    try:
-        return await glossary_manage_service.fetch_all_owners()
-    except Exception as e:
-        raise HTTPException(500, f"소유자 목록 조회 실패: {e}")
-
-
-@router.get("/meta/tags")
-async def list_tags():
-    """모든 태그 목록 조회"""
-    try:
-        return await glossary_manage_service.fetch_all_tags()
-    except Exception as e:
-        raise HTTPException(500, f"태그 목록 조회 실패: {e}")
-
-
-@router.post("/meta/domains")
-async def create_domain(body: DomainCreate):
-    """새 도메인 생성"""
-    try:
-        name = _require_non_empty_name(body.name, "도메인")
-        return await glossary_manage_service.create_new_domain(name, body.description)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(500, f"도메인 생성 실패: {e}")
-
-
-@router.post("/meta/owners")
-async def create_owner(body: OwnerCreate):
-    """새 소유자 생성"""
-    try:
-        name = _require_non_empty_name(body.name, "소유자")
-        return await glossary_manage_service.create_new_owner(name, body.email, body.role)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(500, f"소유자 생성 실패: {e}")
-
-
-@router.post("/meta/tags")
-async def create_tag(body: TagCreate):
-    """새 태그 생성"""
-    try:
-        name = _require_non_empty_name(body.name, "태그")
-        return await glossary_manage_service.create_new_tag(name, body.color)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(500, f"태그 생성 실패: {e}")

@@ -1,15 +1,7 @@
-"""ROBO Analyzer 로깅 유틸리티
-
-일관된 로그 포맷과 컨텍스트 로깅을 제공합니다.
+"""ROBO Data Glossary 로깅 유틸리티
 
 사용법:
-    from util.logger import get_logger, log_context
-    
-    logger = get_logger(__name__)
-    logger.info("분석 시작", file="test.java", line=100)
-    
-    with log_context(file="test.java", phase="LLM"):
-        logger.info("작업 수행")
+    from util.logger import setup_logging, get_logger
 """
 
 import logging

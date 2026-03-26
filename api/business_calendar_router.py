@@ -56,9 +56,32 @@ class SaveBusinessDaysRequest(BaseModel):
     settings: CalendarSettings = Field(default_factory=CalendarSettings, description="캘린더 설정")
 
 
-# =============================================================================
-# 영업일 캘린더 API
-# =============================================================================
+@router.get("/check/{date}")
+async def check_business_day(date: str):
+    """특정 날짜가 영업일인지 확인"""
+    logger.info("[API] 영업일 확인 | date=%s", date)
+    try:
+        return await business_calendar_service.check_business_day(date)
+    except Exception as e:
+        logger.error("[API] 영업일 확인 실패 | error=%s", e)
+        raise HTTPException(500, f"영업일 확인 실패: {e}")
+
+
+@router.get("/non-business-dates")
+async def get_non_business_dates(start: str, end: str):
+    """기간 내 비영업일 날짜 목록 조회 (타임시리즈 필터용)
+
+    Query Params:
+        start: 시작일 (YYYY-MM-DD)
+        end: 종료일 (YYYY-MM-DD)
+    """
+    logger.info("[API] 비영업일 조회 | start=%s | end=%s", start, end)
+    try:
+        return await business_calendar_service.fetch_non_business_dates(start, end)
+    except Exception as e:
+        logger.error("[API] 비영업일 조회 실패 | error=%s", e)
+        raise HTTPException(500, f"비영업일 조회 실패: {e}")
+
 
 @router.get("/{year}")
 async def get_business_days(year: int):
@@ -88,17 +111,6 @@ async def save_business_days(body: SaveBusinessDaysRequest):
         raise HTTPException(500, f"영업일 저장 실패: {e}")
 
 
-@router.get("/check/{date}")
-async def check_business_day(date: str):
-    """특정 날짜가 영업일인지 확인"""
-    logger.info("[API] 영업일 확인 | date=%s", date)
-    try:
-        return await business_calendar_service.check_business_day(date)
-    except Exception as e:
-        logger.error("[API] 영업일 확인 실패 | error=%s", e)
-        raise HTTPException(500, f"영업일 확인 실패: {e}")
-
-
 @router.delete("/{year}")
 async def delete_business_days(year: int):
     """특정 연도의 영업일 설정 삭제"""
@@ -110,17 +122,3 @@ async def delete_business_days(year: int):
         raise HTTPException(500, f"영업일 삭제 실패: {e}")
 
 
-@router.get("/non-business-dates")
-async def get_non_business_dates(start: str, end: str):
-    """기간 내 비영업일 날짜 목록 조회 (타임시리즈 필터용)
-
-    Query Params:
-        start: 시작 날짜 (YYYY-MM-DD)
-        end: 종료 날짜 (YYYY-MM-DD)
-    """
-    logger.info("[API] 비영업일 목록 조회 | start=%s | end=%s", start, end)
-    try:
-        return await business_calendar_service.fetch_non_business_dates(start, end)
-    except Exception as e:
-        logger.error("[API] 비영업일 목록 조회 실패 | error=%s", e)
-        raise HTTPException(500, f"비영업일 목록 조회 실패: {e}")
