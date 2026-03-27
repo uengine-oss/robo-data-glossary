@@ -26,7 +26,7 @@ class Neo4jConfig:
 @dataclass(frozen=True)
 class LLMConfig:
     api_base: str = field(default_factory=lambda: os.getenv("LLM_API_BASE", "https://api.openai.com/v1"))
-    api_key: str = field(default_factory=lambda: os.getenv("LLM_API_KEY", ""))
+    api_key: str = field(default_factory=lambda: os.getenv("LLM_API_KEY") or os.getenv("OPENAI_API_KEY", ""))
     model: str = field(default_factory=lambda: os.getenv("LLM_MODEL", "gpt-4.1"))
     max_tokens: int = field(default_factory=lambda: int(os.getenv("LLM_MAX_TOKENS", "32768")))
     reasoning_effort: str = field(default_factory=lambda: os.getenv("LLM_REASONING_EFFORT", "medium"))
