@@ -65,6 +65,7 @@ class CustomLLMClient(BaseChatModel):
             company_name=company_name,
         )
 
+    @property
     def _llm_type(self) -> str:
         return "custom-chat-model"
 
