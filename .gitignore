@@ -28,3 +28,6 @@ langchain.db
 
 # Claude Code
 .claude
+
+# Private Datas
+p_*
