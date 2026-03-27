@@ -7,9 +7,9 @@ uvicorn==0.34.0
 python-multipart==0.0.20
 
 # LLM 통합 (용어 추출)
-langchain>=1.2.4
-langchain-community>=0.4.1
-langchain-openai>=0.3.12
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-openai>=0.3.0
 langchain-anthropic>=0.3.10
 openai>=1.70.0
 tiktoken>=0.5.0
